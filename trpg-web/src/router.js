@@ -24,6 +24,20 @@ export default new Router({
         },{
           path: 'test',
           component: () => import('./views/Test.vue')
+        },{
+          path: 'createCh',
+          name: 'createCh',
+          component: () => import('./views/CreateCh.vue'),
+          children:[
+            {
+              path:'ChBase',
+              component: () => import('./components/ChBase.vue')
+            },
+            {
+              path:'ChSkill',
+              component: () => import('./components/ChSkill.vue')
+            }
+          ]
         }
       ]
     },

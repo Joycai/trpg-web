@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>欢迎使用</h1>
         <router-view></router-view>
     </div>
 </template>

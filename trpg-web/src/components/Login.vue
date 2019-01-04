@@ -44,6 +44,7 @@ export default {
       //   console.log(res.data)
       // })
       localData.setToken("test-123456")
+      this.$router.push("/trpg")
     }
   }
 };
