@@ -14,9 +14,18 @@ export default new Router({
       component: Home
     },
     {
-      path: '/test',
-      name: 'test',
-      component: () => import('./views/Test.vue')
+      path: '/trpg',
+      name: 'trpg',
+      component: () => import('./views/Trpg.vue'),
+      children:[
+        {
+          path: "login",
+          component: () => import('./components/Login.vue')
+        },{
+          path: 'test',
+          component: () => import('./views/Test.vue')
+        }
+      ]
     },
     {
       path: '/about',
