@@ -19,6 +19,7 @@
           min="0"
           max="100"
           step="5"
+          @change="emitToParent"
         ></el-input>
       </el-form-item>
       <el-form-item label="体质" class="input-type1">
@@ -101,6 +102,12 @@ export default {
           parseInt(baseInfo.lck)
       ).toString();
       return total;
+    }
+  },
+  methods:{
+    emitToParent: function () {
+      console.log("fire")
+      this.$emit('transferBaseInfo',this.baseInfo)
     }
   },
   data: function() {

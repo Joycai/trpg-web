@@ -6,13 +6,15 @@
       </el-header>
       <el-container>
         <el-aside width="200px" >
-          <el-menu :default-active="$route.path" style="height:45em" router >
-            <el-menu-item index="/trpg/createCh/ChBase">基础属性</el-menu-item>
-            <el-menu-item index="/trpg/createCh/ChSkill">技能</el-menu-item>
+          <el-menu :default-active="menu_idx" style="height:45em" @select="selectHandler" >
+            <el-menu-item index="1" >基础属性</el-menu-item>
+            <el-menu-item index="2">技能</el-menu-item>
           </el-menu>
         </el-aside>
         <el-main>
-          <router-view></router-view>
+          <div v-show="menu_idx==1" >
+            <ch-base @transferBaseInfo="updateBaseInfo"></ch-base>
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -20,13 +22,25 @@
 </template>
 
 <script>
+import chBase from '@/components/ChBase.vue'
 export default {
   name: "test",
-  components: {},
+  components: {
+    chBase
+  },
   data: function() {
     return {
-      visible: false
+      visible: false,
+      menu_idx: "1",
     };
+  },
+  methods:{
+    selectHandler:function(index){
+      this.menu_idx = index
+    },
+    updateBaseInfo:function(baseInfo){
+      console.log("1111",baseInfo.str)
+    }
   },
   mounted:function(){
       console.log(this.$route.path)
