@@ -6,7 +6,14 @@
 
 <script>
 export default {
-    name:'chskill'
+    name:'chskill',
+    data: function () {
+        return {
+            skillInfo:{
+                
+            }
+        }
+    }
 }
 </script>
 
