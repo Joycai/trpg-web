@@ -94,7 +94,7 @@
               span(class='hob-skill') {{hobPerks}}
               span(style='color: crimson;') &nbsp; {{this.jobInfo.jobSkillMsg}}
             el-row()
-              el-col( v-for='item in baseSkills' :key='item.code' :xs={span:24} :span='12')
+              el-col( v-for='item in baseSkills' :key='item.code' :xs={span:24} :span='12' :lg={span:8})
                 div(style='margin-bottom: 1em;')
                   div( :class="[{ 'job-skill' : isJobPerk(item.name) }, { 'hob-skill': item.value2 > 0,'job-skill' : item.value > 0 }]" ) {{item.name}} 
                     span(v-if="item.code == '000'") [{{jobInfo.credRange.min}}~{{jobInfo.credRange.max}}]
@@ -174,8 +174,8 @@ export default {
         baseSkills: [],
         exJobNum: 0,
         customJobGroup: [],
-        jobSkillMsg:"",
-        credRange:{}
+        jobSkillMsg: "",
+        credRange: {}
       },
       baseInfoRule: {
         str: [
@@ -192,34 +192,34 @@ export default {
     };
   },
   computed: {
-    jobPerks: function () {
+    jobPerks: function() {
       let total = 0;
-      let attrArray = this.jobInfo.mainAttr
-      if( attrArray !== undefined && attrArray.length > 0){
+      let attrArray = this.jobInfo.mainAttr;
+      if (attrArray !== undefined && attrArray.length > 0) {
         let arr = new Array();
-        for( var i in attrArray){
+        for (var i in attrArray) {
           arr[i] = this.getAttrById(attrArray[i]);
         }
-        let usedAttr = Math.max.apply(null,arr);
-        total = usedAttr*2 + this.baseInfo.edu * 2;
+        let usedAttr = Math.max.apply(null, arr);
+        total = usedAttr * 2 + this.baseInfo.edu * 2;
       }
       total = this.baseInfo.edu * 4;
 
       //计算已经用掉的
       let used = 0;
       let skills = this.baseSkills;
-      for( var j in skills ){
-        used += skills[j].value
+      for (var j in skills) {
+        used += skills[j].value;
       }
       return total - used;
     },
-    hobPerks: function () {
+    hobPerks: function() {
       let total = this.baseInfo.edu * 2;
       //计算已经用掉的
       let used = 0;
       let skills = this.baseSkills;
-      for( var j in skills ){
-        used += skills[j].value2
+      for (var j in skills) {
+        used += skills[j].value2;
       }
       return total - used;
     },
@@ -330,7 +330,7 @@ export default {
       //基本职业技能
       if (this.isBaseJobPerk(name)) {
         return true;
-      }else if(this.isGroupJobPerk(name)){
+      } else if (this.isGroupJobPerk(name)) {
         //n选m技能，判断数量
         let groupInfo = this.findSkillGroup(name);
         let num = groupInfo.num;
@@ -348,16 +348,16 @@ export default {
       }
     },
     //计算一下已经选掉的技能熟练
-    calSelectJobSkilsGroup: function( nameArray){
+    calSelectJobSkilsGroup: function(nameArray) {
       var count = 0;
-      for( var idx in nameArray){
+      for (var idx in nameArray) {
         let skill = this.findBaseSkill(nameArray[idx]);
-        if(skill.value > 0) count++;
+        if (skill.value > 0) count++;
       }
       return count;
     },
     //获取技能所在的技能组信息
-    findSkillGroup: function(name){
+    findSkillGroup: function(name) {
       let groupSkills = this.jobInfo.customJobGroup;
       if (groupSkills.length > 0) {
         for (var i1 in groupSkills) {
@@ -389,10 +389,19 @@ export default {
       return undefined;
     },
     // 1~8对应 strt~edu
-    getAttrById: function(code){
+    getAttrById: function(code) {
       let baseInfo = this.baseInfo;
-      var array = [baseInfo.str,baseInfo.con,baseInfo.siz,baseInfo.dex,baseInfo.app,baseInfo.int,baseInfo.pow,baseInfo.edu];
-      return array[code-1];
+      var array = [
+        baseInfo.str,
+        baseInfo.con,
+        baseInfo.siz,
+        baseInfo.dex,
+        baseInfo.app,
+        baseInfo.int,
+        baseInfo.pow,
+        baseInfo.edu
+      ];
+      return array[code - 1];
     },
     selectHandler: function(index) {
       this.menu_idx = index;
@@ -450,7 +459,20 @@ export default {
     initSkillList: function() {
       this.professionList = jobData.getJobList();
       //读取技能列表
-      this.baseSkills = skillData.readSkillList();
+      // this.baseSkills = skillData.readSkillList();
+      this.$http.get("/resource/testdata.json").then(response => {
+        var data =response.body;
+        //base
+        var base = data.base;
+        var arr = new Array();
+        var idx = 0;
+        for( var i in base){
+          // console.log(base[i])
+          arr[idx]=base[i]
+          idx++
+        }
+        this.baseSkills = arr;
+      });
 
       this.jobHandle();
     },
