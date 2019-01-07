@@ -5,7 +5,7 @@
         h1(style='text-align: center;') 创建角色  
       el-container
         el-aside(width='200px')
-          el-menu( :default-active='menu_idx' style='height:45em;text-align: center;' @select='selectHandler')
+          el-menu( :default-active='menu_idx' style='height:45em;text-align: center;' @select='pageSelectHandler')
             el-menu-item(index='1') 简介
             el-menu-item(index='2') 属性
             el-menu-item(index='3') 技能
@@ -28,7 +28,7 @@
               el-form-item(label='职业')
                 el-input(clearable v-model='chInfo.profession')
               el-form-item(label='职业模板')
-                el-select(v-model='chInfo.professionCode' placeholder='职业模板' filterable @change='initSkillList')
+                el-select(v-model='chInfo.professionCode' placeholder='职业模板' filterable @change='jobChangeHandle')
                   el-option(v-for='item in professionList' :key = 'item.code' :label='item.name' :value='item.code')
               el-form-item(label='国籍')
                 el-input(clearable v-model='chInfo.nationality')
@@ -95,26 +95,27 @@
               span(style='color: crimson;') &nbsp; {{this.jobInfo.jobSkillMsg}}
             el-row()
               el-col( v-for='item in baseSkills' :key='item.code' :xs={span:24} :span='12' :lg={span:8})
-                div(style='margin-bottom: 1em;')
-                  div( :class="[{ 'job-skill' : isJobPerk(item.name) }, { 'hob-skill': item.value2 > 0,'job-skill' : item.value > 0 }]" ) {{item.name}} 
-                    span(v-if="item.code == '000'") [{{jobInfo.credRange.min}}~{{jobInfo.credRange.max}}]
-                    span(style='color:forestgreen;') &nbsp;({{item.value+item.value2+item.base}})
-                  div(style='font-size: smaller;') 基础值:
-                    span(style='color: chocolate;') {{item.base}} 
-                  div(style='display:flex;margin-top:0.5em;')
-                    span(style='margin:0.15em 0.25em auto 0;') 职业
-                    el-input-number( v-model='item.value' :min="0" :max="100" controls-position="right" size='mini' :disabled='!enableJobPerk(item.name)')
-                    span(style='margin:0.15em 0.25em auto 0.25em;') 兴趣
-                    el-input-number( v-model='item.value2' :min="0" :max="100" controls-position="right" size='mini' :disabled='!item.enableHobPerk')
-
+                skill-selector(style='margin-bottom: 1em;' :item='item' @change="skillChangeHandle")
+            hr(style='margin:0.5em auto 1.5em auto')
+            el-row()
+              el-col(:xs={span:24} :span='12' :lg={span:8})
+                div()
+                  span 选择专精:
+                  el-cascader( expand-trigger='hover' :options='options' v-model='proSkillSelecterValue' size='small' style='margin-left:0.5em;margin-right:0.75em;')
+                  el-button(icon='el-icon-plus' type="success" size='mini' circle @click='proPerkAdd')
+            el-row()
+              el-col(:xs={span:24} :span='12' :lg={span:8})
+                div()
+                 skill-selector( :item='testItem')
 </template>
 
 <script>
-import chBase from "@/components/ChBase.vue";
-import chSkill from "@/components/ChSkill.vue";
+import skillSelector from "@/components/SkillSelector.vue";
 import myMath from "@/util/mathUtil.js";
-import skillData from "@/data/skillList.js";
+// import skillData from "@/data/skillList.js";
+import { isInArray } from "@/util/commonUtils.js";
 import { queryDB } from "@/data/dbData.js";
+
 import jobData from "@/data/jobData.js";
 import {
   str_info,
@@ -131,15 +132,45 @@ import {
 export default {
   name: "test",
   components: {
-    chBase,
-    chSkill
+    skillSelector
+    // chSkill
   },
   data: function() {
     return {
+      testItem: {
+        name: "111",
+        value: 1,
+        value2: 2,
+        base: 3
+      },
+      proSkillSelecterValue: [],
+      options: [
+        {
+          value: "sc",
+          label: "科学",
+          children: [
+            { value: "1001", label: "物理" },
+            { value: "1002", label: "化学" }
+          ]
+        }
+      ],
       visible: false,
       menu_idx: "1",
       professionList: [],
+      //基本技能列表
+      // [ {
+      // "name": "会计",
+      // "code": "100",
+      // "base": 5,
+      // "value": 0,
+      // "value2": 0,
+      // "enableHobPerk": true,
+      // "jobPerk": false
+      // }]
       baseSkills: {},
+      // 专精技能
+      // name:[{ name: , code: , base: , value: ,value2: }]结构，下标为大类名，
+      specSkills: {},
       chInfo: {
         name: "",
         gender: 0,
@@ -150,6 +181,7 @@ export default {
         nationality: "",
         homeland: ""
       },
+      // data 基本属性
       baseInfo: {
         str: 0,
         con: 0,
@@ -169,25 +201,22 @@ export default {
         db: "0",
         bod: 0
       },
+      // data 职业数据
       jobInfo: {
         mainAttr: [],
-        baseSkills: [],
+        baseSkills: [""],
         exJobNum: 0,
-        customJobGroup: [],
-        jobSkillMsg: "",
-        credRange: {}
-      },
-      baseInfoRule: {
-        str: [
+        customJobGroup: [
           {
-            type: "integer",
-            required: true,
-            min: 0,
-            max: 100,
-            message: "请输入0~100",
-            trigger: "blur"
+            num: 0,
+            skills: [""]
           }
-        ]
+        ],
+        jobSkillMsg: "",
+        credRange: {
+          min: 30,
+          max: 70
+        }
       }
     };
   },
@@ -290,87 +319,8 @@ export default {
     }
   },
   methods: {
-    //判断是不是分组职业技能
-    isGroupJobPerk: function(name) {
-      let groupSkills = this.jobInfo.customJobGroup;
-      if (groupSkills.length > 0) {
-        for (var i1 in groupSkills) {
-          let item = groupSkills[i1];
-          if (item.skills.indexOf(name) > -1) {
-            return true;
-          }
-        }
-        return false;
-      } else {
-        return false;
-      }
-    },
-    isBaseJobPerk: function(name) {
-      //基础技能列表
-      let jobSkills = this.jobInfo.baseSkills;
-      if (name == "信用") {
-        return true;
-      }
-      if (
-        jobSkills !== undefined &&
-        jobSkills.length > 0 &&
-        jobSkills.indexOf(name) > -1
-      ) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    // 判断是不是基本职业技能（包括信用，和多选一），但是不包含自由特长
-    isJobPerk: function(name) {
-      return this.isBaseJobPerk(name) || this.isGroupJobPerk(name);
-    },
-    //是否可以用职业加点
-    enableJobPerk: function(name) {
-      //基本职业技能
-      if (this.isBaseJobPerk(name)) {
-        return true;
-      } else if (this.isGroupJobPerk(name)) {
-        //n选m技能，判断数量
-        let groupInfo = this.findSkillGroup(name);
-        let num = groupInfo.num;
-        let current_num = this.calSelectJobSkilsGroup(groupInfo.skills);
-        return current_num < num || this.findBaseSkill(name).value > 0;
-      } else {
-        //判断额外自由选则
-        let exJobNum = this.jobInfo.exJobNum;
-        if (exJobNum == 0) {
-          return false;
-        } else {
-          let skill = this.findBaseSkill(name);
-          return this.customJobSkillNum < exJobNum || skill.value > 0;
-        }
-      }
-    },
-    //计算一下已经选掉的技能熟练
-    calSelectJobSkilsGroup: function(nameArray) {
-      var count = 0;
-      for (var idx in nameArray) {
-        let skill = this.findBaseSkill(nameArray[idx]);
-        if (skill.value > 0) count++;
-      }
-      return count;
-    },
-    //获取技能所在的技能组信息
-    findSkillGroup: function(name) {
-      let groupSkills = this.jobInfo.customJobGroup;
-      if (groupSkills.length > 0) {
-        for (var i1 in groupSkills) {
-          let item = groupSkills[i1];
-          if (item.skills.indexOf(name) > -1) {
-            return item;
-          }
-        }
-      }
-      return undefined;
-    },
+    //从数组1的区间中找到数组2对应的提示信息
     findMsgByArray: function(v, rangeArray, msgArray) {
-      //从数组1的区间中找到数组2对应的提示信息
       for (var i = 1, len = rangeArray.length; i < len; i++) {
         if (v >= rangeArray[i - 1] && v < rangeArray[i]) {
           return msgArray[i - 1];
@@ -378,11 +328,11 @@ export default {
       }
       return msgArray[msgArray.length - 1];
     },
-    //根据技能名寻找某个技能的数据对象
-    findBaseSkill: function(name) {
+    //根据技能代码寻找某个技能的数据对象
+    findBaseSkill: function(code) {
       var skills = this.baseSkills;
       for (var idx = 0, total = skills.length; idx < total; idx++) {
-        if (skills[idx].name == name) {
+        if (skills[idx].code == code) {
           return skills[idx];
         }
       }
@@ -403,9 +353,7 @@ export default {
       ];
       return array[code - 1];
     },
-    selectHandler: function(index) {
-      this.menu_idx = index;
-    },
+    //计算额外属性
     extAttrCal: function() {
       var info = this.baseInfo;
       //计算移动
@@ -421,7 +369,6 @@ export default {
       } else {
         info.mov = 8 - mov_alt;
       }
-
       //计算hp
       info.hpMax = Math.floor((info.con + info.siz) / 10);
       info.hp = info.hpMax;
@@ -434,15 +381,14 @@ export default {
       var ext = queryDB(info.str + info.siz);
       info.db = ext.db;
       info.bod = ext.bod;
-
       //计算闪避
-      var missSkill = this.findBaseSkill("闪避");
+      var missSkill = this.findBaseSkill("110");
       missSkill.base = Math.floor(info.dex / 2);
-
       //计算母语
-      var lanSkill = this.findBaseSkill("母语");
+      var lanSkill = this.findBaseSkill("119");
       lanSkill.base = info.edu;
     },
+    //计算随机属性
     ranAttr: function() {
       var info = this.baseInfo;
       info.str = 5 * (myMath.ranD6() + myMath.ranD6() + myMath.ranD6());
@@ -456,27 +402,104 @@ export default {
       info.lck = 5 * (myMath.ranD6() + myMath.ranD6() + myMath.ranD6());
       this.extAttrCal();
     },
+    //转换数组
+    convertArray: function(src) {
+      let arr = new Array();
+      let idx = 0;
+      for (let i in src) {
+        arr[idx] = src[i];
+        idx++;
+      }
+      return arr;
+    },
+    // [初始化]技能表
     initSkillList: function() {
       this.professionList = jobData.getJobList();
-      //读取技能列表
       // this.baseSkills = skillData.readSkillList();
       this.$http.get("/resource/testdata.json").then(response => {
-        var data =response.body;
+        let data = response.body;
         //base
-        var base = data.base;
-        var arr = new Array();
-        var idx = 0;
-        for( var i in base){
-          // console.log(base[i])
-          arr[idx]=base[i]
-          idx++
-        }
-        this.baseSkills = arr;
+        this.baseSkills = this.convertArray(data.base);
+        // 科学
+        this.specSkills.sc = this.convertArray(data.sc);
+        // 生存
+        this.specSkills.sv = this.convertArray(data.sv);
+        // 技艺
+        this.specSkills.art = this.convertArray(data.art);
+        // 驾驶
+        this.specSkills.dr = this.convertArray(data.dr);
+        // 格斗
+        this.specSkills.ft = this.convertArray(data.ft);
+        // 射击
+        this.specSkills.st = this.convertArray(data.st);
       });
-
-      this.jobHandle();
     },
-    jobHandle: function() {
+    //刷新技能可选状态
+    //
+    // 1.将所有可用本职技能的enableJobPerk设为true，注意要处理多选1的情况
+    // 2.将本职技能jobPerk改为true
+    refreshSkillStatus: function(resetValue) {
+      //获取技能组信息
+      // let baseSkillsArr = this.baseSkills;
+      // let specSkillsMap = this.specSkills;
+      //获取职业技能信息
+      // let jobBaseSkillsArr = this.jobInfo.baseSkills;
+      // let jobGroupSkillsArr = this.jobInfo.customJobGroup;
+      // let exSkillNum = this.jobInfo.exJobNum;
+      //重设状态
+      this.restSkillStatusToDefault(resetValue);
+    },
+    //重设技能可选状态（108克苏鲁始终禁止, 107信用始终设为兴趣不可）
+    restSkillStatusToDefault: function(resetValue) {
+      let baseSkillsArr = this.baseSkills;
+      let specSkillsMap = this.specSkills;
+      for (let i in baseSkillsArr) {
+        let skill = baseSkillsArr[i];
+        if (skill.code == "108") {
+          skill.jobPerk = false;
+          skill.enableJobPerk = false;
+          skill.enableHobPerk = false;
+        } else if (skill.code == "107") {
+          skill.jobPerk = true;
+          skill.enableJobPerk = true;
+          skill.enableHobPerk = false;
+        }
+        if (resetValue) {
+          skill.value = 0;
+          skill.value2 = 0;
+        }
+      }
+      for (let i in specSkillsMap) {
+        let arr = specSkillsMap[i];
+        for (let j in arr) {
+          let skill = arr[j];
+          skill.jobPerk = false;
+          skill.enableJobPerk = false;
+          skill.enableHobPerk = true;
+          if (resetValue) {
+            skill.value = 0;
+            skill.value2 = 0;
+          }
+        }
+      }
+    },
+    // -------------以下是事件钩子---------------
+    pageSelectHandler: function(index) {
+      this.menu_idx = index;
+    },
+    // 添加专精技能
+    proPerkAdd: function() {
+      // this.testItem.name = '信用评级'
+      console.debug(this.testItem.value + " " + this.testItem.value2);
+      console.log(this.proSkillSelecterValue);
+    },
+    // 处理技能变更
+    skillChangeHandle: function(code) {
+      console.debug("变更了技能" + code);
+      this.refreshSkillStatus(false);
+    },
+    // 处理职业变更后的本职技能变更导致的数据更新
+    jobChangeHandle: function() {
       if (
         this.chInfo.professionCode === undefined &&
         this.chInfo.professionCode.length == 0
@@ -487,8 +510,7 @@ export default {
       //将调整所有职业技能
       if (jobInfo !== undefined) {
         //基础职业技能
-        var jobSkill = jobInfo.jobSkill;
-        this.jobInfo.baseSkills = jobSkill;
+        this.jobInfo.baseSkills = jobInfo.jobSkill;
         //自由职业点
         this.jobInfo.exJobNum = jobInfo.exJobNum;
         //n选m职业点
@@ -497,11 +519,15 @@ export default {
         this.jobInfo.jobSkillMsg = jobInfo.jobSkillMsg;
         //主属性
         this.jobInfo.mainAttr = jobInfo.mainAttr;
+        //信用范围
         this.jobInfo.credRange = jobInfo.credRange;
+        //重置技能状态
+        this.refreshSkillStatus(true);
       }
     }
   },
   mounted: function() {
+    this.jobChangeHandle();
     this.initSkillList();
   }
 };
@@ -525,12 +551,6 @@ h1 {
   height: 100%;
 }
 
-.hob-skill {
-  color: limegreen;
-}
-.job-skill {
-  color: blue;
-}
 .modal-title {
   color: aqua;
 }
