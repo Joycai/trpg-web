@@ -44,8 +44,16 @@ const jobList = [{
         "135",
         "137"
     ],
-    exJobNum: 2, //额外任选,
-    customJobGroup: [],
+    exJobNum: 0, //额外任选,
+    customJobGroup: [
+        {
+            num:1,
+            skills:[
+                "2003",
+                "2008"
+            ]
+        }
+    ],
     jobSkillMsg: "任选2项特长",
     info: ""
 }]
