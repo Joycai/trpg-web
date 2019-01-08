@@ -1,63 +1,95 @@
+// 角色基础属性
 <template lang="pug">
-  div()
-    div(class="baseInfo-row" style='margin-left:5em;')
-      span(style='color: green;') HP:{{hpMax}}/{{hpMax}} &nbsp;
-      span(style='color: blue;') MP:{{mpMax}}/{{mpMax}} &nbsp;
-    div(class='baseInfo-row' style='margin-left:1em;')
-      span(style='color: gold;') 理智:{{san}}/{{baseInfo.sanMax}} &nbsp;
-      span(style='color: gray;') 移动力:{{baseInfo.mov}} &nbsp;
-      span(style='color: lightcoral;') 伤害加成:{{baseInfo.db}} &nbsp;
-    //- div(class="baseInfo-row" style='margin-left:5em;')
-    //-   span(style='color: red;') {{}}
-    p(style='margin-left: 5em;margin-bottom:0.5em;') 当前属性总和&nbsp;
-      span(style='color: red;') {{totalAttr}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 力量
-      el-input-number( label='力量' v-model.number="baseInfo.str" :min="0" :max="100"  @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyStr}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 体质
-      el-input-number( label='体质' v-model.number="baseInfo.con" :min="0" :max="100"  @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyCon}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 体型
-      el-input-number( label='体型' v-model.number="baseInfo.siz" :min="0" :max="100"  @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifySiz}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 敏捷
-      el-input-number( label='力量' v-model.number="baseInfo.dex" :min="0" :max="100"  @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyDex}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 外貌
-      el-input-number( label='外貌' v-model.number="baseInfo.app" :min="0" :max="100" )
-      label(class='baseInfo-info' ) {{notifyApp}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 智力
-      el-input-number( label='智力' v-model.number="baseInfo.int" :min="0" :max="100" @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyInt}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 意志
-      el-input-number( label='意志' v-model.number="baseInfo.pow" :min="0" :max="100"  @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyPow}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 教育
-      el-input-number( label='教育' v-model.number="baseInfo.edu" :min="0" :max="100" @change="$emit('attrChanged')")
-      label(class='baseInfo-info' ) {{notifyEdu}}
-    div(class="baseInfo-row")
-      label(class='baseInfo-label') 幸运
-      el-input-number( label='幸运' v-model.number="baseInfo.lck" :min="0" :max="100" )
-      label(class='baseInfo-info' ) {{notifyLck}}
-    div(class="baseInfo-row")
-      el-button(type='primary' @click='ranAttr' style='margin-left: 6em;') 试试手气
+  div(class="")
+    div()
+      span(class="info-hp") HP: {{baseInfo.hp}} / {{baseInfo.hpMax}} &nbsp;
+      span(class="info-mp") MP: {{baseInfo.mp}} / {{baseInfo.mpMax}} &nbsp;
+      span(class="info-san") 理智: {{baseInfo.san}} / {{baseInfo.sanMax}} &nbsp;
+      span(class="info-mov") 移动力: {{baseInfo.mov}} &nbsp;
+      span(class="info-db") 伤害加成: {{baseInfo.db}} &nbsp;
+    div 当前属性总和 &nbsp;
+      span(style="color: blue;") {{totalAttr}}
+
+    div(class="attr-container") 
+      div(class="att-item")
+        div(class="baseInfo-label") 力量
+        div(class="baseInfo-notify") {{notifyStr}}
+        el-input-number( label='力量' v-model.number="baseInfo.str" :min="0" :max="100" @input="handleStr")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 体质
+        div(class='baseInfo-notify' ) {{notifyCon}}
+        el-input-number( label='体质' v-model.number="baseInfo.con" :min="0" :max="100" @input="handleCon")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 体型
+        div(class="baseInfo-notify" ) {{notifySiz}}
+        el-input-number( label='体型' v-model.number="baseInfo.siz" :min="0" :max="100" @input="handleSiz")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 敏捷
+        div(class="baseInfo-notify" ) {{notifyDex}}
+        el-input-number( label='力量' v-model.number="baseInfo.dex" :min="0" :max="100" @input="handleDex")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 外貌
+        div(class="baseInfo-notify" ) {{notifyApp}}
+        el-input-number( label='外貌' v-model.number="baseInfo.app" :min="0" :max="100")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 智力
+        div(class="baseInfo-notify" ) {{notifyInt}}
+        el-input-number( label='智力' v-model.number="baseInfo.int" :min="0" :max="100")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 意志
+        div(class="baseInfo-notify" ) {{notifyPow}}
+        el-input-number( label='意志' v-model.number="baseInfo.pow" :min="0" :max="100" @input="handlePow")
+
+      div(class="att-item")
+        div(class='baseInfo-label') 教育
+        div(class="baseInfo-notify" ) {{notifyEdu}}
+        el-input-number( label='教育' v-model.number="baseInfo.edu" :min="0" :max="100" )
+
+      div(class="att-item")
+        div(class='baseInfo-label') 幸运
+        div(class="baseInfo-notify" ) {{notifyLck}}
+        el-input-number( label='幸运' v-model.number="baseInfo.lck" :min="0" :max="100" )
+    div(class="baseInfo-row-btn")
+      el-button(class="my-button" type='primary' @click='ranAttr') 试试手气
 </template>
 
 <style lang="scss" scoped>
-.baseInfo-row {
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
+@import "@/style/InfoStyle.scss";
+
+.attr-container {
+  // text-align: center;
+  // justify-content:center;
+  // align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  // flex-direction: column;
+}
+.att-item {
+  // text-align: center;
+  // justify-content: center;
+  // display: flex;
+  // width: 200px;
+  padding: 1em;
+}
+.baseInfo-row-btn {
+}
+@mixin row-label {
+  margin-bottom: 0.5em;
 }
 .baseInfo-label {
-  margin-right: 1em;
+  @include row-label();
+}
+.baseInfo-notify {
+  @include row-label();
+  color: #606266;
+  font-style: oblique;
+  font-size: 0.9em;
 }
 </style>
 
@@ -73,75 +105,77 @@ import {
   edu_info,
   lck_info
 } from "@/data/chAttrMsg.js";
+import { queryDB } from "@/data/DataDB.js";
 import myMath from "@/util/mathUtil.js";
 
 export default {
   data: function() {
     return {
-      baseInfo: {}
+      baseInfo: {
+        str: 0,
+        con: 0,
+        siz: 0,
+        dex: 0,
+        app: 0,
+        int: 0,
+        pow: 0,
+        edu: 0,
+        lck: 0,
+        mov: 0,
+        san: 0,
+        sanMax: 0,
+        hp: 0,
+        hpMax: 0,
+        mp: 0,
+        mpMax: 0,
+        db: "0",
+        bod: 0
+      }
     };
   },
   props: {
-    data: Object
+    data: Object,
+    cocSkillValue: {
+      type: Number,
+      default: 0
+    },
+    age: {
+      typer: Number,
+      required: true
+    },
+    initValue: {
+      // 是否在最大值变化的同时修改当前值
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
-    hpMax: function() {
-      let info = this.baseInfo;
-      //计算hp
-      let hpMax = Math.floor((info.con + info.siz) / 10);
-      info.hpMax = hpMax;
-      info.hp = hpMax;
-      return hpMax;
-    },
-    mpMax: function() {
-      //计算mp
-      let info = this.baseInfo;
-      let mpMax = Math.floor(info.pow / 5);
-      info.mpMax = mpMax;
-      info.mp = mpMax;
-      return mpMax;
-    },
-    san: function () {
-      let info = this.baseInfo;
-      let san = info.pow
-      info.san = san
-      return san
-    },
     notifyStr: function() {
-      var v = this.baseInfo.str;
-      return this.findMsgByArray(v, str_info.range, str_info.msg);
+      return this.findMsgByArray(this.baseInfo.str, str_info.range, str_info.msg);
     },
     notifyCon: function() {
-      var v = this.baseInfo.con;
-      return this.findMsgByArray(v, con_info.range, con_info.msg);
+      return this.findMsgByArray(this.baseInfo.con, con_info.range, con_info.msg);
     },
     notifySiz: function() {
-      var v = this.baseInfo.siz;
-      return this.findMsgByArray(v, siz_info.range, siz_info.msg);
+      return this.findMsgByArray(this.baseInfo.siz, siz_info.range, siz_info.msg);
     },
     notifyDex: function() {
-      var v = this.baseInfo.dex;
-      return this.findMsgByArray(v, dex_info.range, dex_info.msg);
+      return this.findMsgByArray(this.baseInfo.dex, dex_info.range, dex_info.msg);
     },
     notifyApp: function() {
-      var v = this.baseInfo.app;
-      return this.findMsgByArray(v, app_info.range, app_info.msg);
+      return this.findMsgByArray(this.baseInfo.app, app_info.range, app_info.msg);
     },
     notifyInt: function() {
-      var v = this.baseInfo.int;
-      return this.findMsgByArray(v, int_info.range, int_info.msg);
+      return this.findMsgByArray(this.baseInfo.int, int_info.range, int_info.msg);
     },
     notifyPow: function() {
-      var v = this.baseInfo.pow;
-      return this.findMsgByArray(v, pow_info.range, pow_info.msg);
+      return this.findMsgByArray(this.baseInfo.pow, pow_info.range, pow_info.msg);
     },
     notifyEdu: function() {
-      var v = this.baseInfo.edu;
-      return this.findMsgByArray(v, edu_info.range, edu_info.msg);
+      return this.findMsgByArray(this.baseInfo.edu, edu_info.range, edu_info.msg);
     },
     notifyLck: function() {
-      var v = this.baseInfo.lck;
-      return this.findMsgByArray(v, lck_info.range, lck_info.msg);
+      return this.findMsgByArray(this.baseInfo.lck, lck_info.range, lck_info.msg);
     },
     totalAttr: function() {
       let baseInfo = this.baseInfo;
@@ -159,17 +193,33 @@ export default {
     }
   },
   mounted: function() {
-    this.baseInfo = this.data;
+    if (this.data !== undefined) {
+      this.baseInfo = this.data;
+    }
+    this.calMaxHP();
+    this.calMaxMP();
+    this.calMaxSAN();
+    this.calDB();
+    this.calMov();
   },
   methods: {
     //从数组1的区间中找到数组2对应的提示信息
     findMsgByArray: function(v, rangeArray, msgArray) {
+      let idx = this.findMsgByIdx(v, rangeArray);
+      if (idx == -1) {
+        return msgArray[msgArray.length - 1];
+      }else{
+        return msgArray[idx];
+      }
+    },
+    findMsgByIdx: function(v, rangeArray) {
       for (var i = 1, len = rangeArray.length; i < len; i++) {
         if (v >= rangeArray[i - 1] && v < rangeArray[i]) {
-          return msgArray[i - 1];
+          return i - 1;
         }
       }
-      return msgArray[msgArray.length - 1];
+      //未找到
+      return -1;
     },
     //计算随机属性
     ranAttr: function() {
@@ -183,8 +233,74 @@ export default {
       info.pow = 5 * (myMath.ranD6() + myMath.ranD6() + myMath.ranD6());
       info.edu = 5 * (myMath.ranD6() + myMath.ranD6() + 6);
       info.lck = 5 * (myMath.ranD6() + myMath.ranD6() + myMath.ranD6());
+    },
+    // ***********计算参数**************
+    calDB: function () {
+      let db = queryDB(this.baseInfo.siz + this.baseInfo.str);
+      this.baseInfo.db = db.db;
+      this.baseInfo.bod = db.bod;
+    },
+    calMov: function () {
+      let movDelta = 0;
+      if(this.age > 40){
+        movDelta = Math.ceil((this.age - 40) / 10)
+      }
+      let base = 8;
+      let str = this.baseInfo.str;
+      let dex = this.baseInfo.dex;
+      let siz = this.baseInfo.siz;
 
-      this.$emit("attrChanged");
+      if(str > siz && dex > siz){
+        base = 9;
+      }else if( str < siz && dex < siz ){
+        base = 7;
+      }
+      this.baseInfo.mov = base - movDelta;
+    },
+    calMaxHP: function() {
+      let info = this.baseInfo;
+      //计算hp
+      let maxHp = Math.floor((info.con + info.siz) / 10);
+      info.hpMax = maxHp;
+      if(this.initValue){
+        info.hp = maxHp;
+      }
+    },
+    calMaxMP: function() {
+      //计算mp
+      let info = this.baseInfo;
+      let mpMax = Math.floor(info.pow / 5);
+      info.mpMax = mpMax;
+      if(this.initValue){
+        info.mp = mpMax;
+      }
+    },
+    calMaxSAN: function() {
+      let sanMax = this.baseInfo.pow - this.cocSkillValue;
+      this.baseInfo.sanMax = sanMax;
+      if(this.initValue){
+        this.baseInfo.san = sanMax;
+      }
+    },
+    // *************钩子*************
+    handleStr: function () {
+      this.calDB();
+      this.calMov();
+    },
+    handleCon: function () {
+      this.calMaxHP();
+    },
+    handleSiz: function () {
+      this.calMaxHP();
+      this.calDB();
+      this.calMov();
+    },
+    handleDex: function () {
+      this.calMov();
+    },
+    handlePow: function () {
+      this.calMaxSAN();
+      this.calMaxMP();
     }
   }
 };
