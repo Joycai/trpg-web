@@ -9,6 +9,7 @@
             el-menu-item(index='1') 简介
             el-menu-item(index='2') 属性
             el-menu-item(index='3') 技能
+            el-menu-item(index='4') 物品
         el-main
           //- 基本信息
           ch-info-panel( v-show='menu_idx==1' :chInfo='chInfo' :professionList='professionList' @jobChange='jobChangeHandle' )
@@ -27,7 +28,7 @@
                 skill-selector(style='margin-bottom: 1em;' :data='item' :colorCode='item.groupCode' @changeJobPerk='skillChangeHandle')
             hr(style='margin:0.5em auto 1.5em auto')
             el-row()
-              el-col(:xs={span:24} :span='12' :lg={span:8})
+              el-col( :span='24' )
                 div()
                   span 选择专精:
                   el-cascader( expand-trigger='hover' :options='proSkillSelecterOptions' v-model='proSkillSelecterValue' size='small' style='margin-left:0.5em;margin-right:0.75em;')
@@ -37,12 +38,17 @@
                 //- 通过visible来控制渲染
                 el-button(icon='el-icon-minus' type="danger" class="btn-del-proskill" @click='proPerkRemove(catcode,skillcode)' circle)
                 skill-selector( :data='item' :colorCode='item.groupCode'  style='margin-bottom: 1em;' @changeJobPerk='skillChangeHandle')
+          //- 物品列表
+          ch-item-panel( v-show='menu_idx==4')
+
 </template>
 
 <script>
 import skillSelector from "@/components/SkillSelector.vue";
 import chInfoPanel from "@/components/ChInfo.vue";
 import chAttrPanel from "@/components/ChAttr.vue";
+import chItemPanel from "@/components/ChItem.vue";
+
 
 // import skillData from "@/data/skillList.js";
 import { isInArray } from "@/util/commonUtils.js";
@@ -55,7 +61,8 @@ export default {
   components: {
     skillSelector,
     chInfoPanel,
-    chAttrPanel
+    chAttrPanel,
+    chItemPanel
   },
   data: function() {
     return {
@@ -105,7 +112,16 @@ export default {
         profession: "",
         professionCode: "", //职业模板代号
         nationality: "",
-        homeland: ""
+        homeland: "",
+        intro: "",          //简介
+        belief: "",         //信仰
+        importantPerson: "",//重要之人
+        memoPlace: "",      //意义非凡之地
+        treasure: "",       //宝贵之物
+        trait: "",          //特质
+        wound: "",          //创伤
+        fearAndCrazy: "",   //恐惧症与狂躁症
+        background: ""      //背景
       },
       // data 基本属性
       baseAttr: {
@@ -462,16 +478,15 @@ export default {
         this.proSkillSelecterValue = [];
       }
     },
-    proPerkRemove: function (catCode,skillCode) {
-        let skill = this.specSkills[catCode][skillCode];
-        skill.value = 0;
-        skill.value2 = 0;
-        skill.visible = false;
-        this.refreshSkillStatus(false);
+    proPerkRemove: function(catCode, skillCode) {
+      let skill = this.specSkills[catCode][skillCode];
+      skill.value = 0;
+      skill.value2 = 0;
+      skill.visible = false;
+      this.refreshSkillStatus(false);
     },
     // 处理技能变更
     skillChangeHandle: function(code) {
-      
       this.refreshSkillStatus(false);
     },
     // 处理职业变更后的本职技能变更导致的数据更新

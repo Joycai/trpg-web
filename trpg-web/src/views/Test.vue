@@ -20,6 +20,14 @@ export default {
         return{
             visible: false
         }
+    },
+    mounted:function(){
+        let obj = {
+            a: "aaa",
+            b: "bbb",
+            c: "ccc"
+        }
+        console.log(obj[0])
     }
 }
 </script>

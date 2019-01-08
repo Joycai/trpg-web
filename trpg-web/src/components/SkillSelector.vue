@@ -6,20 +6,31 @@
       div(style='font-size: smaller;') 基础值:
         span(style='color: chocolate;') {{item.base}} 
       div(style='display:flex;margin-top:0.5em;')
-        span(style='margin:0.15em 0.25em auto 0;') 职业
-        el-input-number( v-model='item.value' :min="0" :max="100" controls-position="right" size='mini' :disabled='!item.enableJobPerk' @change="$emit('changeJobPerk',item.code)")
-        span(style='margin:0.15em 0.25em auto 0.25em;') 兴趣
-        el-input-number( v-model='item.value2' :min="0" :max="100" controls-position="right" size='mini' :disabled='!item.enableHobPerk')
+        span(style='margin:0.15em 0.3em auto 0;') 职业
+        el-input-number(class='input-perk' v-model='item.value' :min="0" :max="100" controls-position="right" size='mini' :disabled='!item.enableJobPerk' @change="$emit('changeJobPerk',item.code)")
+        span(style='margin:0.15em 0.3em auto 0.3em;') 兴趣
+        el-input-number(class='input-perk' v-model='item.value2' :min="0" :max="100" controls-position="right" size='mini' :disabled='!item.enableHobPerk')
 </template>
 
-<style lang="scss" scoped>
-.hob-skill {
+<style lang="scss">
+//输入框的样式补丁
+.input-perk {
+  width: 80px;
+  input {
+    padding-right: 35px !important;
+  }
+  span {
+    width: 20px !important;
+  }
+}
+
+.skill-title-hob {
   color: limegreen;
 }
-.job-skill {
+.skill-title-job {
   color: blue;
 }
-.legend-skill {
+.skill-title-legend {
   color: gold;
 }
 .color-code-1 {
@@ -38,9 +49,9 @@ export default {
   computed: {
     nameStyleObj: function() {
       return {
-        "hob-skill": this.item.value2 > 0,
-        "job-skill": this.item.jobPerk || this.item.value > 0,
-        "legend-skill": this.item.code == 108,
+        "skill-title-hob": this.item.value2 > 0,
+        "skill-title-job": this.item.jobPerk || this.item.value > 0,
+        "skill-title-legend": this.item.code == 108,
         "color-code-1": this.colorCode == 0,
         "color-code-2": this.colorCode == 1,
         "color-code-3": this.colorCode == 2
