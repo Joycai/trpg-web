@@ -4,13 +4,7 @@
       el-header
         h1(style="text-align: center;") 创建角色  
           span 
-            el-button(@click="test")  输出数据对象          
-        //- el-aside(width="200px")
-        //-   el-menu( class="tab-menu" :default-active="menu_idx" @select="pageSelectHandler")
-        //-     el-menu-item(index="1") 简介
-        //-     el-menu-item(index="2") 属性
-        //-     el-menu-item(index="3") 技能
-        //-     el-menu-item(index="4") 物品
+            el-button(@click="test")  输出数据对象
       el-main
         el-tabs(class="tab-menu" :tab-position="tabPosition")
           el-tab-pane(label="基本信息") 
@@ -20,6 +14,7 @@
             //- 人物属性
             ch-attr-pane(:data="baseAttr" :age="chInfo.age" :initValue="true")
           el-tab-pane(label="技能列表") skill
+            ch-skill-pane
           el-tab-pane(label="装备列表") item
 
         //- //- 技能

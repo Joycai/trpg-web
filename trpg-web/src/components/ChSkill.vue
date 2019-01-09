@@ -8,10 +8,26 @@
 
 <script>
 //技能选择器
-import skillSelector from "@/components/ChSkillSelector.vue";
+import SkillSelector from "@/components/ChSkillSelector.vue";
 export default {
     components:{
-        skillSelector
+        SkillSelector
+    },
+    data: function () {
+        return {
+
+        }
+    },
+    mounted: function () {
+        this.$http.get("/resource/testdata.json")
+        .then(
+            function(res){
+                console.log(res.body);
+            },
+            function(res){
+
+            }
+        )
     }
 }
 </script>
