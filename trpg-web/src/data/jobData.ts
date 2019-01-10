@@ -63,7 +63,7 @@ export default {
         let jsonStr = JSON.stringify(jobList);
         return JSON.parse(jsonStr);
     },
-    findJobInfo: function (code) {
+    findJobInfo: function (code:string) {
         for (var idx = 0, siz = jobList.length; idx < siz; idx++) {
             let item = jobList[idx]
             if (item.code == code) {

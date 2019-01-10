@@ -88,35 +88,41 @@
 </style>
 
 <script>
-import JobData from "@/data/jobData.js";
+import JobData from "@/data/jobData";
+import {ChInfoDto} from "@/data/dto/ChDtos";
+
 
 export default {
   data: function() {
     return {
-      info: {
-        name: "",
-        gender: 0,
-        age: 20,
-        era: "0",
-        jobTemplateCode: "",
-        jobName: "",
-        nationality: "",
-        homeland: "",
-        intro: "",
-        belief: "",
-        importantPerson: "",
-        memoPlace: "",
-        treasure: "",
-        trait: "",
-        wound: "",
-        fearAndCrazy: "",
-        background: ""
-      },
+      info: new ChInfoDto(),
+      // info: {
+      //   name: "",
+      //   gender: 0,
+      //   age: 20,
+      //   era: "0",
+      //   jobTemplateCode: "",
+      //   jobName: "",
+      //   nationality: "",
+      //   homeland: "",
+      //   intro: "",
+      //   belief: "",
+      //   importantPerson: "",
+      //   memoPlace: "",
+      //   treasure: "",
+      //   trait: "",
+      //   wound: "",
+      //   fearAndCrazy: "",
+      //   background: ""
+      // },
       jobList: []
     };
   },
   props: {
-    chInfo: Object
+    chInfo: ChInfoDto
+  },
+  methods:{
+
   },
   mounted: function() {
     this.jobList = JobData.getJobList();

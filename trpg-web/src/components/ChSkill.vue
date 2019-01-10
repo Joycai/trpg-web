@@ -1,5 +1,6 @@
 <template lang="pug">
-    
+    div
+      <skill-selector></skill-selector>
 </template>
 
 <style lang="scss">

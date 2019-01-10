@@ -104,9 +104,9 @@ import {
   pow_info,
   edu_info,
   lck_info
-} from "@/data/chAttrMsg.js";
-import { queryDB } from "@/data/DataDB.js";
-import myMath from "@/util/mathUtil.js";
+} from "@/data/chAttrMsg";
+import { queryDB } from "@/data/DataDB";
+import myMath from "@/util/mathUtil";
 
 export default {
   data: function() {

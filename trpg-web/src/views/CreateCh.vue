@@ -35,6 +35,7 @@ import ChInfoPane from "@/components/ChInfo.vue";
 import ChAttrPane from "@/components/ChAttr.vue";
 import ChSkillPane from "@/components/ChSkill.vue";
 import ChItemPane from "@/components/ChItem.vue";
+import {ChInfoDto} from "@/data/dto/ChDtos";
 
 // import { isInArray } from "@/util/commonUtils.js";
 // import { queryDB } from "@/data/dbData.js";
@@ -53,25 +54,26 @@ export default {
       // 页面元素控制属性
       tabPosition: "top",
       // 数据对象
-      chInfo: {
-        name: "",
-        gender: 0,
-        age: 20,
-        era: "0",
-        jobTemplateCode: "",
-        jobName: "",
-        nationality: "",
-        homeland: "",
-        intro: "",
-        belief: "",
-        importantPerson: "",
-        memoPlace: "",
-        treasure: "",
-        trait: "",
-        wound: "",
-        fearAndCrazy: "",
-        background: ""
-      },
+      chInfo: new ChInfoDto(),
+      // chInfo: {
+      //   name: "",
+      //   gender: 0,
+      //   age: 20,
+      //   era: "0",
+      //   jobTemplateCode: "",
+      //   jobName: "",
+      //   nationality: "",
+      //   homeland: "",
+      //   intro: "",
+      //   belief: "",
+      //   importantPerson: "",
+      //   memoPlace: "",
+      //   treasure: "",
+      //   trait: "",
+      //   wound: "",
+      //   fearAndCrazy: "",
+      //   background: ""
+      // },
       baseAttr: {
         str: 0,
         con: 0,
