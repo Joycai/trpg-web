@@ -37,10 +37,6 @@ import ChSkillPane from "@/components/ChSkill.vue";
 import ChItemPane from "@/components/ChItem.vue";
 import {ChInfoDto} from "@/data/dto/ChDtos";
 
-// import { isInArray } from "@/util/commonUtils.js";
-// import { queryDB } from "@/data/dbData.js";
-// import jobData from "@/data/jobData.js";
-
 export default {
   name: "test",
   components: {
