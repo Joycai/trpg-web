@@ -87,12 +87,12 @@
 }
 </style>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import JobData from "@/data/jobData";
-import {ChInfoDto} from "@/data/dto/ChDtos";
+import { ChInfoDto } from "@/data/dto/ChDtos";
 
-
-export default {
+export default Vue.extend({
   data: function() {
     return {
       info: new ChInfoDto(),
@@ -130,5 +130,5 @@ export default {
       this.info = this.chInfo;
     }
   }
-};
+});
 </script>

@@ -7,10 +7,11 @@
 
 </style>
 
-<script>
+<script lang="ts">
 //技能选择器
+import Vue from "vue";
 import SkillSelector from "@/components/ChSkillSelector.vue";
-export default {
+export default Vue.extend({
     components:{
         SkillSelector
     },
@@ -23,12 +24,12 @@ export default {
         this.$http.get("/resource/testdata.json")
         .then(
             function(res){
-                console.log(res.body);
+                console.log(res.data);
             },
             function(res){
 
             }
         )
     }
-}
+})
 </script>
