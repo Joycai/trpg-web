@@ -106,7 +106,7 @@ import {
   lck_info
 } from "@/data/chAttrMsg";
 import { queryDB } from "@/data/DataDB";
-import myMath from "@/util/mathUtil";
+import myMath from "@/util/MathUtil";
 
 export default {
   data: function() {

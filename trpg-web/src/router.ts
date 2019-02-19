@@ -20,20 +20,20 @@ export default new Router({
       children: [
         {
           path: "login",
-          component: () => import("./components/Login.vue")
+          component: () => import(/* webpackChunkName: "login" */ "./components/Login.vue")
         },
         {
           path: "home",
-          component: () => import("./views/TrpgHome.vue")
+          component: () => import(/* webpackChunkName: "home" */ "./views/TrpgHome.vue")
         },
         {
           path: "test",
-          component: () => import("./views/Test.vue")
+          component: () => import(/* webpackChunkName: "test" */ "./views/Test.vue")
         },
         {
           path: "createCh",
           name: "createCh",
-          component: () => import("./views/CreateCh.vue")
+          component: () => import(/* webpackChunkName: "createCh" */ "./views/CreateCh.vue")
         }
       ]
     },
