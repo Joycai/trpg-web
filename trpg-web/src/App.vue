@@ -16,7 +16,7 @@
           <div class="layout-logo"></div>
           <div class="layout-nav">
             <MenuItem name="1">
-              <Icon type="ios-navigate" />Item 1
+              <Icon type="ios-navigate" />测试
             </MenuItem>
           </div>
         </Menu>
@@ -27,9 +27,9 @@
             <MenuItem name="1">
               <Icon type="ios-paper" />排序工具
             </MenuItem>
-            <MenuItem name="2">
+            <!-- <MenuItem name="2">
               <Icon type="ios-navigate" />Item 2
-            </MenuItem>
+            </MenuItem> -->
           </Menu>
         </Sider>
         <Layout :style="{padding: '0 24px 24px'}">
@@ -66,10 +66,10 @@ export default {
   },
   methods: {
     sideSelect: function(name) {
-      if(name == '1'){
+      if(name == '2'){
         this.$router.push("/")
       }
-      if(name == "2"){
+      if(name == "1"){
         this.$router.push("/battle")
       }
     }
@@ -81,6 +81,7 @@ export default {
 
 <style lang="scss">
 #app {
+  // font-size: 1.5em;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
