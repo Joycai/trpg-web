@@ -1,7 +1,13 @@
 <template>
   <div>
+    <div class="chr-data-import">
+      <input type="file" ref="file" id="input-upload" value accept="text/plain" />
+      <Button style="marginBottom: 5px;" @click="handleImport">Import</Button>
+    </div>
     <div class="chr-list">
       <Button style="marginBottom: 5px;" @click="modal.add=true">Add</Button>
+      <Button style="marginBottom: 5px;" @click="handleExport">Export</Button>
+
       <Table height="280" :columns="table.columns" :data="charData"></Table>
     </div>
     <div class="chr-set">
@@ -78,10 +84,13 @@
 </style>
 
 <script>
+import FileSaver from "file-saver";
+
 export default {
   name: "battle",
   data() {
     return {
+      file: "",
       modal: {
         edit: false,
         editData: {},
@@ -191,7 +200,6 @@ export default {
     }
   },
   methods: {
-
     render: function(item) {
       return item.name + "-" + item.class + "-" + item.hp + "-" + item.dex;
     },
@@ -250,7 +258,29 @@ export default {
       });
       this.updateTimeLine();
     },
-    modalAddCancel: function() {}
+    modalAddCancel: function() {},
+    //离线数据导入
+    handleImport: function() {
+      console.log("aaa");
+      let file = this.$refs.file.files[0];
+      let reader = new FileReader();
+      reader.readAsText(file);
+      let _chr_data = this.charData;
+      reader.onload = function() {
+        console.log(this.result);
+        let data = JSON.parse(this.result);
+        _chr_data.splice(0, _chr_data.length);
+        data.forEach(element => {
+          _chr_data.push(element);
+        });
+      };
+    },
+    handleExport: function() {
+      var blob = new Blob([JSON.stringify(this.charData)], {
+        type: "text/plain;charset=utf-8"
+      });
+      FileSaver.saveAs(blob, "hello world.txt");
+    }
   }
 };
 </script>
