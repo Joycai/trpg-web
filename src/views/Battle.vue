@@ -107,16 +107,18 @@ export default {
         columns: [
           {
             title: "Name",
-            key: "name"
+            key: "name",
+            width: 150
           },
           {
             title: "Initiative",
-            key: "dex"
+            key: "dex",
+            width: 100
           },
           {
             title: "Stat",
             key: "stat",
-            width: 120,
+            width: 180,
             align: "center",
             render: (h, params) => {
               return h("div", [h("p", params.row.hp + "/" + params.row.hpMax)]);
