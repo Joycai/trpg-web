@@ -48,9 +48,9 @@
 
 <script>
 // import HelloWorld from "./components/HelloWorld.vue";
-import Battle from "./views/Battle.vue";
+// import Battle from "./views/Battle.vue";
 
-const con = console;
+// const con = console;
 
 export default {
   name: "app",
@@ -62,7 +62,7 @@ export default {
     };
   },
   components: {
-    Battle
+    // Battle
   },
   methods: {
     sideSelect: function(name) {
