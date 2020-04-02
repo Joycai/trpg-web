@@ -207,7 +207,7 @@ export default {
       // console.log(newTargetKeys);
       // console.log(direction);
       // console.log(moveKeys);
-      console.log("change");
+      // console.log("change");
       this.targetKeys = newTargetKeys;
       this.updateTimeLine();
     },
