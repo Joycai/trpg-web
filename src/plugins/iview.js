@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import iView from 'iview'
+import Vue from 'vue';
+import ViewUI from 'view-design';
 
-Vue.use(iView)
+import 'view-design/dist/styles/iview.css';
 
-import 'iview/dist/styles/iview.css'
+Vue.use(ViewUI)

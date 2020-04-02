@@ -279,7 +279,7 @@ export default {
       var blob = new Blob([JSON.stringify(this.charData)], {
         type: "text/plain;charset=utf-8"
       });
-      FileSaver.saveAs(blob, "hello world.txt");
+      FileSaver.saveAs(blob, "ouput.txt");
     }
   }
 };
