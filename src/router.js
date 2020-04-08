@@ -14,11 +14,11 @@ export default new Router({
       name: 'home',
       component: Home
     },
-    {
-      path: '/battle',
-      name: 'Battle',
-      component: () => import(/* webpackChunkName: "Battle" */ './views/Battle.vue')
-    },
+    // {
+    //   path: '/battle',
+    //   name: 'Battle',
+    //   component: () => import(/* webpackChunkName: "Battle" */ './views/Battle.vue')
+    // },
     {
       path: '/about',
       name: 'about',
