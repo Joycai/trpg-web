@@ -4,7 +4,7 @@ const path = require("path");
 module.exports = {
     configureWebpack: {
       plugins: [
-        new BundleAnalyzerPlugin()
+        // new BundleAnalyzerPlugin()
       ]
       // resolve: {
       //   alias: {

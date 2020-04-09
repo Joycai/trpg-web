@@ -6,7 +6,7 @@
       @collapse="onCollapse"
       @breakpoint="onBreakpoint"
     >
-      <a-menu theme="dark" mode="inline" :defaultSelectedKeys="['4']">
+      <a-menu  mode="inline" :defaultSelectedKeys="menu.selectItem">
         <a-menu-item key="1">
           <a-icon type="user" />
           <span class="nav-text">nav 1</span>
@@ -39,6 +39,24 @@
 
 export default {
   name: "home",
-  components: {}
+  components: {},
+  mounted(){
+    console.log("ok",this.menu.selectItem)
+  },
+  data()  {
+    return {
+      menu: {
+        selectItem: ["1"]
+      }
+    }
+  },
+  methods: {
+      onCollapse(collapsed, type) {
+        console.log(collapsed, type);
+      },
+      onBreakpoint(broken) {
+        console.log(broken);
+      },
+    }
 };
 </script>
